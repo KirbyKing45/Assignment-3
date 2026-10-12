@@ -84,7 +84,9 @@ public class FirePiranhaPlant : Enemy
         else if (state == EFirePiranhaPlantState.Active)
         {
             holdTimer -= Time.deltaTime * Game.Instance.LocalTimeScale;
-            animator.Play("FirePiranhaLeftUp");
+            // animator.Play("FirePiranhaLeftUp2"); FirePiranhaLeftDown2
+
+            UpdateFirePiranhaPlantOrientation();
             if (holdTimer <= 0.0f)
             {
                 holdTimer = 0.0f;
@@ -93,8 +95,12 @@ public class FirePiranhaPlant : Enemy
         }
         else if (state == EFirePiranhaPlantState.Firing)
         {
+            // Do something similar to what I did in the active state, but use the mouth-opening animation.
+            // Remember to select firePiranhaPlant in the Hierarchy before creating a new animation.
+            // In your case, it looks like you didn't select that GameObject.
+
             holdTimer -= Time.deltaTime * Game.Instance.LocalTimeScale;
-            animator.Play("FirePiranhaLeftUpOpen");
+           // animator.Play("FirePiranhaLeftUpOpen");
             if (holdTimer <= 0.0f)
             {
                 holdTimer = 0.0f;
@@ -115,6 +121,30 @@ public class FirePiranhaPlant : Enemy
                 animationTimer = 0.0f;
                 SetState(EFirePiranhaPlantState.Hiding);
             }
+        }
+    }
+
+    void UpdateFirePiranhaPlantOrientation()
+    {
+        Vector2 marioLocation = Game.Instance.MarioGameObject.transform.position;
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+
+        bool shouldFlip = marioLocation.x > 0;
+
+        if (spriteRenderer.flipX != shouldFlip)
+        {
+            spriteRenderer.flipX = shouldFlip;
+        }
+
+        if (marioLocation.x < 0 && marioLocation.y >= 0 || marioLocation.x >= 0 && marioLocation.y >= 0)
+        {
+            // Up
+            animator.Play("FirePiranhaLeftUp2");
+        }
+        else if ((marioLocation.x < 0 && marioLocation.y < 0) || (marioLocation.x >= 0 && marioLocation.y < 0))
+        {
+            // Down
+            animator.Play("FirePiranhaLeftDown2");
         }
     }
 
@@ -146,11 +176,13 @@ public class FirePiranhaPlant : Enemy
             }
             else if (state == EFirePiranhaPlantState.Firing)
             {
-               Vector2 marioLocation = Game.Instance.MarioGameObject.transform.position;
-                if (marioLocation.x <= activeLocation.x)
-                {
-                    animator.Play("FirePiranhaLeftUp");
-                }
+               //Vector2 marioLocation = Game.Instance.MarioGameObject.transform.position;
+               // if (marioLocation.x <= activeLocation.x)
+               // {
+               //     animator.Play("FirePiranhaLeftUp");
+               // }
+
+                
             }
             else if (state == EFirePiranhaPlantState.Active)
             {
