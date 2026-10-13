@@ -95,16 +95,35 @@ public class FirePiranhaPlant : Enemy
         }
         else if (state == EFirePiranhaPlantState.Firing)
         {
-            // Do something similar to what I did in the active state, but use the mouth-opening animation.
-            // Remember to select firePiranhaPlant in the Hierarchy before creating a new animation.
-            // In your case, it looks like you didn't select that GameObject.
-
             holdTimer -= Time.deltaTime * Game.Instance.LocalTimeScale;
-           // animator.Play("FirePiranhaLeftUpOpen");
-            if (holdTimer <= 0.0f)
+            Vector2 marioLocation = Game.Instance.MarioGameObject.transform.position;
+            if (marioLocation.x < 0 && marioLocation.y >= 0 || marioLocation.x >= 0 && marioLocation.y >= 0)
+            {
+                animator.Play("FirePiranhaOpen");
+            }
+            else if ((marioLocation.x < 0 && marioLocation.y < 0) || (marioLocation.x >= 0 && marioLocation.y < 0))
+            {
+                animator.Play("FirePiranhaOpen2");
+            }
+                // Do something similar to what I did in the active state, but use the mouth-opening animation.
+                // Remember to select firePiranhaPlant in the Hierarchy before creating a new animation.
+                // In your case, it looks like you didn't select that GameObject.
+
+                // animator.Play("FirePiranhaLeftUpOpen");
+                if (holdTimer <= 0.0f)
             {
                 holdTimer = 0.0f;
-                SetState(EFirePiranhaPlantState.AnimatingDown);
+                SetState(EFirePiranhaPlantState.FiringDelay);
+            }
+            else if (state == EFirePiranhaPlantState.FiringDelay)
+            {
+                animationTimer -= Time.deltaTime * Game.Instance.LocalTimeScale;
+                if (holdTimer <= 0.0f)
+                {
+                    holdTimer = 0.0f;
+                    SetState(EFirePiranhaPlantState.AnimatingDown);
+                }
+
             }
         }
         else if (state == EFirePiranhaPlantState.AnimatingDown)
